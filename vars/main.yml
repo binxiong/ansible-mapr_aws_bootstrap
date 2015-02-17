@@ -1,10 +1,2 @@
 ---
 # vars file for mapr-aws-bootstrap
-
-mapr_cluster_name: my.cluster.com
-ec2_keypair: vgonzalez_keypair 
-ec2_security_group:
-  - vpc-internal
-  - ssh-only
-ec2_zone: us-east-1b
-vpc_subnet: subnet-9bfae2ef
