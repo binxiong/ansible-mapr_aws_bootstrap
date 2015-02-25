@@ -4,6 +4,8 @@
   - name: create nodes for non-cluster roles
     action:
       module: ec2
+      aws_access_key: '{{aws_access_key}}'
+      aws_secret_key: '{{aws_secret_key}}'
       region: '{{ec2_region}}'
       zone: '{{ec2_zone}}'
       spot_price: '{{edge_node_price}}'
@@ -26,6 +28,8 @@
   - name: create cluster nodes
     action:
       module: ec2
+      aws_access_key: '{{aws_access_key}}'
+      aws_secret_key: '{{aws_secret_key}}'
       region: '{{ec2_region}}'
       zone: '{{ec2_zone}}'
       spot_price: '{{cluster_node_price}}'
