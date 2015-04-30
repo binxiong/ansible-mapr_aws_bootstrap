@@ -1,0 +1,60 @@
+#!/usr/bin/env python
+
+import argparse
+import json
+
+def ansible_inventory():
+	cluster = [
+	{%- for result in ec2_cluster.results %}
+	    {%- for instance in result.instances %}
+	      "{{instance.private_ip}}",
+	    {% endfor %}
+	{% endfor %}
+	  ]
+
+	edge = [
+	{%- for result in external.results %}
+	    {%- for instance in result.instances %}
+	      "{{instance.private_ip}}",
+	    {% endfor %}
+	{% endfor %}
+	  ]
+
+	# Use python list slicing to define the hosts.
+	# cluster[1:2] gives a list with one element, since slicing
+	# is not inclusive (e.g., [1:2] == [1])
+	SERVICE_MAP = {
+			"cluster": cluster,
+			"hiveserver": cluster[1:2],
+			"hbasemaster": cluster[1:3],
+			"regionserver": cluster,
+			"impalastatestore": cluster[3:4],
+			"impalacatalog": cluster[3:4],
+			"jobtracker": cluster[3:4],
+			"resourcemanager": cluster[3:4],
+			"historyserver": cluster[3:4],
+			"webserver": cluster[1:3],
+			"tasktracker": cluster,
+			"nodemanager": cluster,
+			"metrics": cluster[1:3],
+			"zookeepers": cluster[0:3],
+			"cldb": cluster[0:4],
+			"nfs": cluster,
+			"fileserver": cluster,
+			"edge": edge,
+			"spark_master": cluster[0:1],
+			"spark_slave": cluster[1:],
+			"opentsdb": cluster[3:4],
+		}
+
+	return SERVICE_MAP
+
+def main():
+	parser = argparse.ArgumentParser()
+	parser.add_argument("list", help="display inventory") 
+
+	inventory = ansible_inventory()
+
+	print json.dumps(inventory)
+
+if __name__ == "__main__": main()
