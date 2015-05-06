@@ -12,27 +12,14 @@ Requirements
 2. We will provision nodes in a VPC. A VPC must exist, with at least one subnet. You'll need the subnet ID.
 3. You will need a base image. This has been tested with the CentOS 6.5 AMI in us-east-1 having ID `ami-8997afe0`.
 4. You will need your SSH keypair already generated and available in AWS. You will want to have the PEM file local as well.
-5. You will need a security group. The cluster that results from the install_cluster play uses a security group that allows ports 22 and 8443 as well as all traffic originating from the VPC subnet.
-6. It might be a good idea to configure your SSH client (assuming you use a *nix like system) so that it automatically uses your AWS private key when connecting to AWS servers. Try something like the below, substituting paths as necessary.
+5. You will need one or more security groups. The cluster that results from the install_cluster play uses a security group that allows ports 22 and 8443 as well as all traffic originating from the VPC subnet.
+6. It might be a good idea to configure your SSH client (assuming you use a *nix like system) so that it automatically uses your AWS private key when connecting to AWS public IPs. Try something like the below, substituting paths as necessary.
 ```
     Host *.amazonaws.com
     User root
     IdentityFile "~/.ssh/my_keypair.pem"
 ```
 
-When run, the play will expect to obtain AWS credentials from environment variables. A sample file is here:
-
-https://github.com/vicenteg/mapr-ansible-roles/blob/master/aws/credentials.sh.sample
-
-Copy the contents to your own `credentials.sh`, and edit the variables as needed.
-
-Putting it all together, and assuming you've placed your credentials along side the sample in the `aws` subdirectory:
-
-```
-source aws/credentials.sh && ansible-playbook -i hosts playbooks/aws_bootstrap.yml
-```
-
-The `-i hosts` tells ansible to use the inventory file called hosts, which is useful only to the play because it defines localhost. The AWS tasks that run are all initiated from your local machine; your machine uses your credentials to connect to AWS and create the new instances.
 
 Role Variables
 --------------
@@ -83,6 +70,16 @@ This playbook will fail unless the `i_am_sure` variable is set to `True`. It's a
 $ ansible-playbook --extra-vars "i_am_sure=True" --extra-vars="ec2_region=us-east-1" -i playbooks/cluster.hosts playbooks/aws_teardown.yml
 ```
 
+Instance Type Notes
+-----------
+
+m1.xlarge with Amazon Linux will have /dev/xvdf mounted. Need to unmount and remove the mount from fstab. The MFS format step will fail otherwise. You can do this with the following ansible invocation:
+
+
+```
+ansible all -i inventory.py -su ec2-user -m mount -a "src=/dev/xvdf state=absent name=/media/ephemeral0 fstype=ext3"
+```
+
 Dependencies
 ------------
 
@@ -100,9 +97,9 @@ Example Playbook
 License
 -------
 
-WTFPL
+MIT
 
 Author Information
 ------------------
 
-Vince Gonzalez - vgonzalez@mapr.com
+Vince Gonzalez
