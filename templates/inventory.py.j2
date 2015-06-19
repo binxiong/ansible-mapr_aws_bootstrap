@@ -4,6 +4,8 @@ import argparse
 import json
 
 def ansible_inventory():
+	last_node_index = {{ec2_cluster.results|length}}
+
 	cluster = [
 	{%- for result in ec2_cluster.results %}
 	    {%- for instance in result.instances %}
@@ -28,23 +30,24 @@ def ansible_inventory():
 			"hiveserver": cluster[1:2],
 			"hbasemaster": cluster[1:3],
 			"regionserver": cluster,
-			"impalastatestore": cluster[3:4],
-			"impalacatalog": cluster[3:4],
-			"jobtracker": cluster[3:4],
-			"resourcemanager": cluster[3:4],
-			"historyserver": cluster[3:4],
+			"impalaserver": cluster,
+			"impalastatestore": cluster[2:3],
+			"impalacatalog": cluster[2:3],
+			"jobtracker": cluster[1:3],
+			"resourcemanager": cluster[1:3],
+			"historyserver": cluster[2:3],
 			"webserver": cluster[1:3],
 			"tasktracker": cluster,
 			"nodemanager": cluster,
 			"metrics": cluster[1:3],
 			"zookeepers": cluster[0:3],
-			"cldb": cluster[0:4],
+			"cldb": cluster[0:3],
 			"nfs": cluster,
 			"fileserver": cluster,
 			"edge": edge,
 			"spark_master": cluster[0:1],
 			"spark_slave": cluster[1:],
-			"opentsdb": cluster[3:4],
+			"opentsdb": cluster[2:3],
 		}
 
 	return SERVICE_MAP
