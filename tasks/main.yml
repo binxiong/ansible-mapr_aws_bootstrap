@@ -13,7 +13,7 @@
       group: '{{item.value.security_group}}'
       image: '{{item.value.image}}'
       vpc_subnet_id: '{{item.value.vpc_subnet}}'
-      assign_public_ip: true
+      assign_public_ip: '{{item.value.assign_public_ip}}'
       instance_type: '{{edge_node_type}}'
       count: '{{item.value.edge_node_count}}'
       wait: yes
@@ -38,7 +38,7 @@
       group: '{{item.value.security_group}}'
       image: '{{item.value.image}}'
       vpc_subnet_id: '{{item.value.vpc_subnet}}'
-      assign_public_ip: true
+      assign_public_ip: '{{item.value.assign_public_ip}}'
       instance_type: '{{cluster_node_type}}'
       count: '{{item.value.cluster_node_count}}'
       wait: yes
