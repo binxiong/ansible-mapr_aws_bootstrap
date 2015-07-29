@@ -22,6 +22,7 @@ ec2_wait_timeout: 1200
 ec2_name_tag: '{{cluster_name}}'
 vpc_subnet: 
 ssh_user: root
+assign_public_ip: false
 
 # m3.large is a reasonable default for edge nodes.
 # Uses EBS for root, and instance store for MapRFS.
@@ -37,7 +38,6 @@ edge_node_volumes:
     volume_size: 128
     delete_on_termination: true
     ephemeral: ephemeral0
-
 # m3.xlarge is a reasonable default. Use instance store
 # and EBS for root. Don't reboot these!
 cluster_node_price:
