@@ -58,6 +58,6 @@ def main():
 
 	inventory = ansible_inventory()
 
-	print json.dumps(inventory)
+	print json.dumps(inventory, indent=2, sort_keys=True)
 
 if __name__ == "__main__": main()
