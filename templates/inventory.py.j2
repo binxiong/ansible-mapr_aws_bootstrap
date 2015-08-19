@@ -50,6 +50,7 @@ def ansible_inventory():
 			"spark_master": cluster[0:1],
 			"spark_slave": cluster[1:],
 			"opentsdb": cluster[2:3],
+			"solr": cluster
 		}
 
 	return SERVICE_MAP
