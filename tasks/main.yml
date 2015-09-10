@@ -20,6 +20,7 @@
       wait_timeout: '{{ec2_wait_timeout}}'
       volumes: '{{edge_node_volumes}}'
       monitoring: yes
+      placement_group: '{{item.value.placement_group}}'
       instance_tags:
         Name: '{{ec2_name_tag}}'
         user: '{{ec2_keypair}}'
@@ -45,6 +46,7 @@
       wait_timeout: '{{ec2_wait_timeout}}'
       volumes: '{{cluster_node_volumes}}'
       monitoring: yes
+      placement_group: '{{item.value.placement_group}}'
       instance_tags:
         Name: '{{ec2_name_tag}}'
         user: '{{ec2_keypair}}'
