@@ -18,6 +18,7 @@
       count: '{{item.value.edge_node_count}}'
       wait: yes
       wait_timeout: '{{ec2_wait_timeout}}'
+      spot_wait_timeout: '{{ec2_spot_wait_timeout}}'
       volumes: '{{edge_node_volumes}}'
       monitoring: yes
       placement_group: '{{item.value.placement_group}}'
@@ -44,6 +45,7 @@
       count: '{{item.value.cluster_node_count}}'
       wait: yes
       wait_timeout: '{{ec2_wait_timeout}}'
+      spot_wait_timeout: '{{ec2_spot_wait_timeout}}'
       volumes: '{{cluster_node_volumes}}'
       monitoring: yes
       placement_group: '{{item.value.placement_group}}'
