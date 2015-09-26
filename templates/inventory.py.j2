@@ -6,6 +6,14 @@ import json
 def ansible_inventory():
 	last_node_index = {{ec2_cluster.results|length}}
 
+	hostvars = {
+	{%- for result in ec2_cluster.results %}
+	    {%- for instance in result.instances %}
+	      "{{instance.private_ip}}": { "instance_id": "{{instance.id}}" },
+	    {% endfor %}
+	{% endfor %}
+        }
+
 	cluster = [
 	{%- for result in ec2_cluster.results %}
 	    {%- for instance in result.instances %}
@@ -24,8 +32,12 @@ def ansible_inventory():
 
 	# Use python list slicing to define the hosts.
 	# cluster[1:2] gives a list with one element, since slicing
-	# is not inclusive (e.g., [1:2] == [1])
+	# is exclusive of the last index (e.g., [1:2] == [1])
 	SERVICE_MAP = {
+			"_meta" : {
+			       "hostvars" : hostvars
+			},
+
 			"cluster": cluster,
 			"hiveserver": cluster[1:2],
 			"hue": cluster[1:2],
@@ -57,10 +69,14 @@ def ansible_inventory():
 
 def main():
 	parser = argparse.ArgumentParser()
-	parser.add_argument("list", help="display inventory") 
+	parser.add_argument("--list", action="store_true", help="display inventory")
+	parser.add_argument("--host", action="store_true", help="host vars")
 
-	inventory = ansible_inventory()
-
-	print json.dumps(inventory, indent=2, sort_keys=True)
+	args = parser.parse_args()
+	if args.host:
+		print json.dumps(dict())
+	else:
+		inventory = ansible_inventory()
+		print json.dumps(inventory, indent=2, sort_keys=True)
 
 if __name__ == "__main__": main()
