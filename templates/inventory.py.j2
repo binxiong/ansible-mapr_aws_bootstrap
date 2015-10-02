@@ -60,7 +60,7 @@ def ansible_inventory():
 			"fileserver": cluster,
 			"edge": edge,
 			"spark_master": cluster[0:1],
-			"spark_slave": cluster[1:],
+			"spark_slave": cluster,
 			"opentsdb": cluster[2:3],
 			"solr": cluster
 		}
