@@ -12,6 +12,11 @@ def ansible_inventory():
 	      "{{instance.private_ip}}": { "instance_id": "{{instance.id}}" },
 	    {% endfor %}
 	{% endfor %}
+	{%- for result in external.results %}
+	    {%- for instance in result.instances %}
+	      "{{instance.private_ip}}": { "instance_id": "{{instance.id}}" },
+	    {% endfor %}
+	{% endfor %}
         }
 
 	cluster = [
