@@ -58,11 +58,6 @@
   - name: write an inventory file
     template: src=inventory.py.j2 dest=./inventory.py mode=0700 backup=no
 
-  #- name: add the new hosts to inventory
-  #  add_host: name={{item.private_ip}} groups=instances ansible_ssh_user={{ssh_user}} public_ip='{{item.public_ip}}' private_ip='{{item.private_ip}}' public_dns_name='{{item.public_dns_name}}' private_dns_name='{{item.private_dns_name}}'
-  #  with_items: ec2_cluster.instances
-  #  when: ec2_cluster.instances is defined
-
-  #- name: save hosts file
-  #  run_once: yes
-  #  local_action: template src=hosts.j2 dest='./hosts_entry' mode=0644 backup=no
+  - name: save hosts file
+    run_once: yes
+    local_action: template src=hosts.j2 dest='./hosts_entry' mode=0644 backup=no
