@@ -22,12 +22,12 @@ Requirements
 Role Variables
 --------------
 
-Configuration is pulled in from a dictionary. Please look at `defaults/main.yml` for an example.
+Configuration is pulled in from a dictionary. Please look at `defaults/main.yml` for an example. Copy that file to `vars/main.yml`, and edit it. In particular, make sure you update your AWS keys, keypair and security groups. The rest have reasonable (for me) defaults.
 
 Dependencies
 ------------
 
-python module boto (python AWS library)
+python module boto (python AWS library) installed locally.
 
 Example Playbook
 -------------------------
