@@ -22,9 +22,7 @@
       volumes: '{{item.value.edge_node_volumes}}'
       monitoring: yes
       placement_group: '{{item.value.placement_group}}'
-      instance_tags:
-        Name: '{{ec2_name_tag}}'
-        user: '{{item.value.keypair}}'
+      instance_tags: '{{item.value.instance_tags}}'
     register: external
     with_dict: ec2_regions
 
@@ -49,9 +47,7 @@
       volumes: '{{item.value.cluster_node_volumes}}'
       monitoring: yes
       placement_group: '{{item.value.placement_group}}'
-      instance_tags:
-        Name: '{{ec2_name_tag}}'
-        user: '{{item.value.keypair}}'
+      instance_tags: '{{item.value.instance_tags}}'
     register: ec2_cluster
     with_dict: ec2_regions
 
