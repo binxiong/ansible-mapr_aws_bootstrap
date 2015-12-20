@@ -4,8 +4,8 @@
   - name: create nodes for non-cluster roles
     action:
       module: ec2
-      aws_access_key: '{{aws_access_key}}'
-      aws_secret_key: '{{aws_secret_key}}'
+#      aws_access_key: '{{aws_access_key}}'
+#      aws_secret_key: '{{aws_secret_key}}'
       region: '{{item.value.region}}'
       zone: '{{item.value.zone}}'
       spot_price: '{{item.value.edge_node_price}}'
@@ -26,11 +26,15 @@
     register: external
     with_dict: ec2_regions
 
+  - name: update inventory file
+    template: src=inventory.py.j2 dest=./inventory.py mode=0700 backup=no
+
+
   - name: create cluster nodes
     action:
       module: ec2
-      aws_access_key: '{{aws_access_key}}'
-      aws_secret_key: '{{aws_secret_key}}'
+#      aws_access_key: '{{aws_access_key}}'
+#      aws_secret_key: '{{aws_secret_key}}'
       region: '{{item.value.region}}'
       zone: '{{item.value.zone}}'
       spot_price: '{{item.value.cluster_node_price}}'
@@ -51,7 +55,7 @@
     register: ec2_cluster
     with_dict: ec2_regions
 
-  - name: write an inventory file
+  - name: update inventory file
     template: src=inventory.py.j2 dest=./inventory.py mode=0700 backup=no
 
   #- name: save hosts file
