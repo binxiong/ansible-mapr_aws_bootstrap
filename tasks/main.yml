@@ -7,24 +7,26 @@
       region: '{{item.value.region}}'
       zone: '{{item.value.zone}}'
       spot_price: '{{item.value.edge_node_price}}'
-      key_name: '{{ec2_keypair}}'
+      key_name: '{{item.value.keypair}}'
       group: '{{item.value.security_group}}'
       image: '{{item.value.image}}'
       vpc_subnet_id: '{{item.value.vpc_subnet}}'
       assign_public_ip: '{{item.value.assign_public_ip}}'
-      instance_type: '{{edge_node_type}}'
+      instance_type: '{{item.value.edge_node_type}}'
       count: '{{item.value.edge_node_count}}'
       wait: yes
-      wait_timeout: '{{ec2_wait_timeout}}'
-      spot_wait_timeout: '{{ec2_spot_wait_timeout|default(900)}}'
-      volumes: '{{edge_node_volumes}}'
+      wait_timeout: '{{item.value.spot_wait_timeout|default(300)}}'
+      spot_wait_timeout: '{{item.value.spot_wait_timeout|default(900)}}'
+      volumes: '{{item.value.edge_node_volumes}}'
       monitoring: yes
       placement_group: '{{item.value.placement_group}}'
-      instance_tags:
-        Name: '{{ec2_name_tag}}'
-        user: '{{ec2_keypair}}'
+      instance_tags: '{{item.value.instance_tags}}'
     register: external
     with_dict: ec2_regions
+
+  - name: update inventory file
+    template: src=inventory.py.j2 dest=./inventory.py mode=0700 backup=no
+
 
   - name: create cluster nodes
     action:
@@ -32,32 +34,25 @@
       region: '{{item.value.region}}'
       zone: '{{item.value.zone}}'
       spot_price: '{{item.value.cluster_node_price}}'
-      key_name: '{{ec2_keypair}}'
+      key_name: '{{item.value.keypair}}'
       group: '{{item.value.security_group}}'
       image: '{{item.value.image}}'
       vpc_subnet_id: '{{item.value.vpc_subnet}}'
       assign_public_ip: '{{item.value.assign_public_ip}}'
-      instance_type: '{{cluster_node_type}}'
+      instance_type: '{{item.value.cluster_node_type}}'
       count: '{{item.value.cluster_node_count}}'
       wait: yes
-      wait_timeout: '{{ec2_wait_timeout}}'
-      spot_wait_timeout: '{{ec2_spot_wait_timeout|default(900)}}'
-      volumes: '{{cluster_node_volumes}}'
+      wait_timeout: '{{item.value.spot_wait_timeout|default(300)}}'
+      spot_wait_timeout: '{{item.value.spot_wait_timeout|default(900)}}'
+      volumes: '{{item.value.cluster_node_volumes}}'
       monitoring: yes
       placement_group: '{{item.value.placement_group}}'
-      instance_tags:
-        Name: '{{ec2_name_tag}}'
-        user: '{{ec2_keypair}}'
+      instance_tags: '{{item.value.instance_tags}}'
     register: ec2_cluster
     with_dict: ec2_regions
 
-  - name: write an inventory file
+  - name: update inventory file
     template: src=inventory.py.j2 dest=./inventory.py mode=0700 backup=no
-
-  #- name: add the new hosts to inventory
-  #  add_host: name={{item.private_ip}} groups=instances ansible_ssh_user={{ssh_user}} public_ip='{{item.public_ip}}' private_ip='{{item.private_ip}}' public_dns_name='{{item.public_dns_name}}' private_dns_name='{{item.private_dns_name}}'
-  #  with_items: ec2_cluster.instances
-  #  when: ec2_cluster.instances is defined
 
   #- name: save hosts file
   #  run_once: yes

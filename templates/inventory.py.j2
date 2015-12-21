@@ -4,35 +4,41 @@ import argparse
 import json
 
 def ansible_inventory():
-	last_node_index = {{ec2_cluster.results|length}}
-
 	hostvars = {
+{% if ec2_cluster is defined %}
 	{%- for result in ec2_cluster.results %}
 	    {%- for instance in result.instances %}
 	      "{{instance.private_ip}}": { "instance_id": "{{instance.id}}" },
 	    {% endfor %}
 	{% endfor %}
+{% endif %}
+{% if external is defined %}
 	{%- for result in external.results %}
 	    {%- for instance in result.instances %}
 	      "{{instance.private_ip}}": { "instance_id": "{{instance.id}}" },
 	    {% endfor %}
 	{% endfor %}
+{% endif %}
         }
 
 	cluster = [
+{% if ec2_cluster is defined %}
 	{%- for result in ec2_cluster.results %}
 	    {%- for instance in result.instances %}
 	      "{{instance.private_ip}}",
 	    {% endfor %}
 	{% endfor %}
+{% endif %}
 	  ]
 
 	edge = [
+{% if external is defined %}
 	{%- for result in external.results %}
 	    {%- for instance in result.instances %}
 	      "{{instance.private_ip}}",
 	    {% endfor %}
 	{% endfor %}
+{% endif %}
 	  ]
 
 	# Use python list slicing to define the hosts.
