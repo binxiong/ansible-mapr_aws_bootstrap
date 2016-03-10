@@ -66,7 +66,7 @@ def ansible_inventory():
 			"tasktracker": cluster,
 			"nodemanager": cluster,
 			"metrics": cluster[1:3],
-			"zookeepers": cluster[0:3],
+			"zookeeper": cluster[0:3],
 			"cldb": cluster[0:3],
 			"nfs": cluster,
 			"fileserver": cluster,
@@ -74,7 +74,9 @@ def ansible_inventory():
 			"spark_master": cluster[0:1],
 			"spark_slave": cluster,
 			"opentsdb": cluster[2:3],
-			"solr": cluster
+			"solr": cluster,
+			"mesosmaster": cluster[1:3],
+			"mesosslave": cluster
 		}
 
 	return SERVICE_MAP
