@@ -26,6 +26,7 @@
 
   - name: update inventory file
     template: src=inventory.py.j2 dest=./inventory.py mode=0700 backup=no
+    when: external|changed
 
 
   - name: create cluster nodes
