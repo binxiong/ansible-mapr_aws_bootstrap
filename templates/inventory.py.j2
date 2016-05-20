@@ -3,94 +3,96 @@
 import argparse
 import json
 
+
 def ansible_inventory():
-	hostvars = {
+    hostvars = {
 {% if ec2_cluster is defined %}
-	{%- for result in ec2_cluster.results %}
-	    {%- for instance in result.instances %}
-	      "{{instance.private_ip}}": { "instance_id": "{{instance.id}}" },
-	    {% endfor %}
-	{% endfor %}
+    {%- for result in ec2_cluster.results %}
+        {%- for instance in result.instances %}
+          "{{instance.private_ip}}": { "instance_id": "{{instance.id}}" },
+        {% endfor %}
+    {% endfor %}
 {% endif %}
 {% if external is defined %}
-	{%- for result in external.results %}
-	    {%- for instance in result.instances %}
-	      "{{instance.private_ip}}": { "instance_id": "{{instance.id}}" },
-	    {% endfor %}
-	{% endfor %}
+    {%- for result in external.results %}
+        {%- for instance in result.instances %}
+          "{{instance.private_ip}}": { "instance_id": "{{instance.id}}" },
+        {% endfor %}
+    {% endfor %}
 {% endif %}
         }
 
-	cluster = [
+    cluster = [
 {% if ec2_cluster is defined %}
-	{%- for result in ec2_cluster.results %}
-	    {%- for instance in result.instances %}
-	      "{{instance.private_ip}}",
-	    {% endfor %}
-	{% endfor %}
+    {%- for result in ec2_cluster.results %}
+        {%- for instance in result.instances %}
+          "{{instance.private_ip}}",
+        {% endfor %}
+    {% endfor %}
 {% endif %}
-	  ]
+      ]
 
-	edge = [
+    edge = [
 {% if external is defined %}
-	{%- for result in external.results %}
-	    {%- for instance in result.instances %}
-	      "{{instance.private_ip}}",
-	    {% endfor %}
-	{% endfor %}
+    {%- for result in external.results %}
+        {%- for instance in result.instances %}
+          "{{instance.private_ip}}",
+        {% endfor %}
+    {% endfor %}
 {% endif %}
-	  ]
+      ]
 
-	# Use python list slicing to define the hosts.
-	# cluster[1:2] gives a list with one element, since slicing
-	# is exclusive of the last index (e.g., [1:2] == [1])
-	SERVICE_MAP = {
-			"_meta" : {
-			       "hostvars" : hostvars
-			},
+    # Use python list slicing to define the hosts.
+    # cluster[1:2] gives a list with one element, since slicing
+    # is exclusive of the last index (e.g., [1:2] == [1])
+    SERVICE_MAP = {
+            "_meta" : {
+                   "hostvars" : hostvars
+            },
 
-			"cluster": cluster,
-			"hiveserver": cluster[1:2],
-			"hue": cluster[1:2],
-			"oozie": cluster[1:2],
-			"hbasemaster": cluster[1:3],
-			"regionserver": cluster,
-			"impalaserver": cluster,
-			"impalastatestore": cluster[2:3],
-			"impalacatalog": cluster[2:3],
-			"jobtracker": cluster[1:3],
-			"kafka": cluster[0:3],
-			"resourcemanager": cluster[1:3],
-			"historyserver": cluster[2:3],
-			"webserver": cluster[1:3],
-			"tasktracker": cluster,
-			"nodemanager": cluster,
-			"metrics": cluster[1:3],
-			"zookeeper": cluster[0:3],
-			"cldb": cluster[0:3],
-			"nfs": cluster,
-			"fileserver": cluster,
-			"edge": edge,
-			"spark_master": cluster[0:1],
-			"spark_slave": cluster,
-			"opentsdb": cluster[2:3],
-			"solr": cluster,
-			"mesosmaster": cluster[1:3],
-			"mesosslave": cluster
-		}
+            "cluster": cluster,
+            "hiveserver": cluster[1:2],
+            "hue": cluster[1:2],
+            "oozie": cluster[1:2],
+            "hbasemaster": cluster[1:3],
+            "regionserver": cluster,
+            "impalaserver": cluster,
+            "impalastatestore": cluster[2:3],
+            "impalacatalog": cluster[2:3],
+            "jobtracker": cluster[1:3],
+            "kafka": cluster[0:3],
+            "resourcemanager": cluster[1:3],
+            "historyserver": cluster[2:3],
+            "webserver": cluster[1:3],
+            "tasktracker": cluster,
+            "nodemanager": cluster,
+            "metrics": cluster[1:3],
+            "zookeeper": cluster[0:3],
+            "cldb": cluster[0:3],
+            "nfs": cluster,
+            "fileserver": cluster,
+            "edge": edge,
+            "spark_master": cluster[0:1],
+            "spark_slave": cluster,
+            "opentsdb": cluster[2:3],
+            "solr": cluster,
+            "mesosmaster": cluster[1:3],
+            "mesosslave": cluster
+        }
 
-	return SERVICE_MAP
+    return SERVICE_MAP
+
 
 def main():
-	parser = argparse.ArgumentParser()
-	parser.add_argument("--list", action="store_true", help="display inventory")
-	parser.add_argument("--host", action="store_true", help="host vars")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--list", action="store_true", help="display inventory")
+    parser.add_argument("--host", action="store_true", help="host vars")
 
-	args = parser.parse_args()
-	if args.host:
-		print json.dumps(dict())
-	else:
-		inventory = ansible_inventory()
-		print json.dumps(inventory, indent=2, sort_keys=True)
+    args = parser.parse_args()
+    if args.host:
+        print json.dumps(dict())
+    else:
+        inventory = ansible_inventory()
+        print json.dumps(inventory, indent=2, sort_keys=True)
 
 if __name__ == "__main__": main()
