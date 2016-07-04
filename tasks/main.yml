@@ -22,7 +22,7 @@
       placement_group: '{{item.value.placement_group}}'
       instance_tags: '{{item.value.instance_tags}}'
     register: external
-    with_dict: ec2_regions
+    with_dict: '{{ec2_regions}}'
 
   - name: update inventory file
     template: src=inventory.py.j2 dest=./inventory.py mode=0700 backup=no
@@ -50,7 +50,7 @@
       placement_group: '{{item.value.placement_group}}'
       instance_tags: '{{item.value.instance_tags}}'
     register: ec2_cluster
-    with_dict: ec2_regions
+    with_dict: '{{ec2_regions}}'
 
   - name: update inventory file
     template: src=inventory.py.j2 dest=./inventory.py mode=0700 backup=no
