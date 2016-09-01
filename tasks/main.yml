@@ -13,16 +13,25 @@
       vpc_subnet_id: '{{item.value.vpc_subnet}}'
       assign_public_ip: '{{item.value.assign_public_ip}}'
       instance_type: '{{item.value.edge_node_type}}'
-      count: '{{item.value.edge_node_count}}'
+      exact_count: '{{item.value.edge_node_count}}'
+      count_tag:
+        Name: '{{cluster_name}}'
+        nodetype: edge
+        user: '{{item.value.keypair}}'
       wait: yes
       wait_timeout: '{{item.value.spot_wait_timeout|default(300)}}'
       spot_wait_timeout: '{{item.value.spot_wait_timeout|default(900)}}'
       volumes: '{{item.value.edge_node_volumes}}'
       monitoring: yes
       placement_group: '{{item.value.placement_group}}'
-      instance_tags: '{{item.value.instance_tags}}'
+      instance_tags:
+        Name: '{{cluster_name}}'
+        nodetype: edge
+        user: '{{item.value.keypair}}'
     register: external
     with_dict: '{{ec2_regions}}'
+
+  - debug: var=external
 
   - name: update inventory file
     template: src=inventory.py.j2 dest=./inventory.py mode=0700 backup=no
@@ -41,16 +50,25 @@
       vpc_subnet_id: '{{item.value.vpc_subnet}}'
       assign_public_ip: '{{item.value.assign_public_ip}}'
       instance_type: '{{item.value.cluster_node_type}}'
-      count: '{{item.value.cluster_node_count}}'
+      exact_count: '{{item.value.cluster_node_count}}'
+      count_tag:
+        Name: '{{cluster_name}}'
+        nodetype: cluster
+        user: '{{item.value.keypair}}'
       wait: yes
       wait_timeout: '{{item.value.spot_wait_timeout|default(300)}}'
       spot_wait_timeout: '{{item.value.spot_wait_timeout|default(900)}}'
       volumes: '{{item.value.cluster_node_volumes}}'
       monitoring: yes
       placement_group: '{{item.value.placement_group}}'
-      instance_tags: '{{item.value.instance_tags}}'
+      instance_tags:
+        Name: '{{cluster_name}}'
+        nodetype: cluster
+        user: '{{item.value.keypair}}'
     register: ec2_cluster
     with_dict: '{{ec2_regions}}'
+
+  - debug: var=ec2_cluster
 
   - name: update inventory file
     template: src=inventory.py.j2 dest=./inventory.py mode=0700 backup=no

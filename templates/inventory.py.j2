@@ -8,14 +8,14 @@ def ansible_inventory():
     hostvars = {
 {% if ec2_cluster is defined %}
     {%- for result in ec2_cluster.results %}
-        {%- for instance in result.instances %}
+        {%- for instance in result.tagged_instances %}
           "{{instance.private_ip}}": { "instance_id": "{{instance.id}}" },
         {% endfor %}
     {% endfor %}
 {% endif %}
 {% if external is defined %}
     {%- for result in external.results %}
-        {%- for instance in result.instances %}
+        {%- for instance in result.tagged_instances %}
           "{{instance.private_ip}}": { "instance_id": "{{instance.id}}" },
         {% endfor %}
     {% endfor %}
@@ -25,7 +25,7 @@ def ansible_inventory():
     cluster = [
 {% if ec2_cluster is defined %}
     {%- for result in ec2_cluster.results %}
-        {%- for instance in result.instances %}
+        {%- for instance in result.tagged_instances %}
           "{{instance.private_ip}}",
         {% endfor %}
     {% endfor %}
@@ -35,7 +35,7 @@ def ansible_inventory():
     edge = [
 {% if external is defined %}
     {%- for result in external.results %}
-        {%- for instance in result.instances %}
+        {%- for instance in result.tagged_instances %}
           "{{instance.private_ip}}",
         {% endfor %}
     {% endfor %}
