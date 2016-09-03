@@ -31,12 +31,9 @@
     register: external
     with_dict: '{{ec2_regions}}'
 
-  - debug: var=external
-
   - name: update inventory file
     template: src=inventory.py.j2 dest=./inventory.py mode=0700 backup=no
     when: external|changed
-
 
   - name: create cluster nodes
     action:
@@ -67,8 +64,6 @@
         user: '{{item.value.keypair}}'
     register: ec2_cluster
     with_dict: '{{ec2_regions}}'
-
-  - debug: var=ec2_cluster
 
   - name: update inventory file
     template: src=inventory.py.j2 dest=./inventory.py mode=0700 backup=no
